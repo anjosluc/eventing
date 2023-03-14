@@ -65,7 +65,22 @@ func display(event cloudevents.Event) {
 	fmt.Printf("☁️  cloudevents.Event\n%s", event)
 }
 
+func getEnv(key, fallback string) string {
+	if value, ok := os.LookupEnv(key); ok {
+		return value
+	}
+	return fallback
+}
+
 func main() {
+	logFile, err := os.OpenFile(getEnv("LOG_FILE_PATH", "/var/log/app.log"), os.O_CREATE|os.O_APPEND|os.O_RDWR, 0666)
+	if err != nil {
+		panic(err)
+	}
+	mw := io.MultiWriter(os.Stdout, logFile)
+	log.SetOutput(mw)
+	defer logFile.Close()
+
 	run(context.Background())
 }
 
