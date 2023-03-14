@@ -20,7 +20,6 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
-	"fmt"
 	"io"
 	"log"
 	"net/http"
@@ -62,7 +61,12 @@ Data,
 
 // display prints the given Event in a human-readable format.
 func display(event cloudevents.Event) {
-	fmt.Printf("☁️  cloudevents.Event\n%s", event)
+	jsonstr, _ := json.Marshal(event.Context.GetExtensions())
+	log.Printf("{\"data\": %s, \"type\": %s, \"extensions\": %s}",
+		event.DataEncoded,
+		event.Context.GetType(),
+		string(jsonstr),
+	)
 }
 
 func getEnv(key, fallback string) string {
