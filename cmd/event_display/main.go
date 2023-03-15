@@ -82,6 +82,10 @@ func main() {
 		panic(err)
 	}
 	mw := io.MultiWriter(os.Stdout, logFile)
+
+	// Disabling timestamp
+	log.SetFlags(0)
+
 	log.SetOutput(mw)
 	defer logFile.Close()
 
